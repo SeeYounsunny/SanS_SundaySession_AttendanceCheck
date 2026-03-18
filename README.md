@@ -58,8 +58,8 @@ python -m admin_bot
 
 - Project 1개
 - Service 2개
-  - field: start command `python -m field_bot`
-  - admin: start command `python -m admin_bot`
+  - field: `BOT_ROLE=field`
+  - admin: `BOT_ROLE=admin`
 - Postgres 1개
   - 두 서비스에 같은 `DATABASE_URL` 환경변수로 연결
 
