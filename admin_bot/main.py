@@ -147,9 +147,20 @@ async def cmd_help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         return
     await update.effective_message.reply_text(
         "운영봇 명령\n"
+        "- /myid : 내 텔레그램 user_id 확인\n"
         "- /groups : 그룹 목록 + enable 버튼\n"
         "- /enable <chat_id> : 그룹 enable\n"
         "- /stats : 주간/전체 통계\n"
+    )
+
+
+async def cmd_myid(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.effective_user
+    if not user:
+        return
+    await update.effective_message.reply_text(
+        f"your user_id: {user.id}\n"
+        "ADMIN_USER_IDS에 이 숫자를 넣으면 됩니다. (여러 명이면 쉼표로 구분)"
     )
 
 
@@ -168,6 +179,7 @@ def main() -> None:
 
     app.add_handler(CommandHandler("help", cmd_help))
     app.add_handler(CommandHandler("start", cmd_help))
+    app.add_handler(CommandHandler("myid", cmd_myid))
     app.add_handler(CommandHandler("groups", cmd_groups))
     app.add_handler(CommandHandler("enable", cmd_enable))
     app.add_handler(CommandHandler("stats", cmd_stats))
