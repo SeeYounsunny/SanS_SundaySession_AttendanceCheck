@@ -1,4 +1,4 @@
-## SansSun Session Attendance Bot (MVP)
+## Sans Sunday Session Attendance Bot (MVP)
 
 모노레포 구성:
 
