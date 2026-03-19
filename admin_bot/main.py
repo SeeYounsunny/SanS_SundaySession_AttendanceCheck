@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import logging
+import os
+import subprocess
+import sys
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes
@@ -169,6 +172,19 @@ def main() -> None:
     settings = get_settings()
     if not settings.admin_bot_token:
         raise RuntimeError("ADMIN_BOT_TOKEN is required")
+
+    # Run DB migrations on startup (idempotent; creates tables if missing)
+    try:
+        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        subprocess.run(
+            [sys.executable, "-m", "alembic", "upgrade", "head"],
+            cwd=root,
+            env=os.environ,
+            check=True,
+            timeout=60,
+        )
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
+        logger.warning("alembic upgrade head failed: %s", e)
 
     engine = create_db_engine()
     session_factory = make_session_factory(engine)
