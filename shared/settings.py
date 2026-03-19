@@ -26,9 +26,26 @@ def _parse_admin_user_ids(raw: str | None) -> set[int]:
     return out
 
 
+def _normalize_database_url(url: str) -> str:
+    """Use postgresql+psycopg:// (psycopg3) so SQLAlchemy doesn't load psycopg2."""
+    # Force psycopg (v3) driver; we install psycopg[binary], not psycopg2
+    if "psycopg2" in url:
+        url = url.replace("postgresql+psycopg2", "postgresql+psycopg", 1)
+    if url.startswith("postgres://"):
+        url = "postgresql+psycopg://" + url[len("postgres://") :]
+    elif url.startswith("postgresql://") and "+psycopg" not in url:
+        url = url.replace("postgresql://", "postgresql+psycopg://", 1)
+    if "sslmode=" not in url:
+        url += "&sslmode=require" if "?" in url else "?sslmode=require"
+    return url
+
+
 def get_settings() -> Settings:
+    raw = os.environ.get("DATABASE_URL") or ""
+    if not raw:
+        raise RuntimeError("DATABASE_URL is not set")
     return Settings(
-        database_url=os.environ["DATABASE_URL"],
+        database_url=_normalize_database_url(raw),
         field_bot_token=os.environ.get("FIELD_BOT_TOKEN"),
         admin_bot_token=os.environ.get("ADMIN_BOT_TOKEN"),
         admin_user_ids=_parse_admin_user_ids(os.environ.get("ADMIN_USER_IDS")),
