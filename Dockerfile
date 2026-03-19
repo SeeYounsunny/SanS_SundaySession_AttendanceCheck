@@ -12,6 +12,7 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # Copy application
 COPY . /app
 
-# Default: run field bot. Admin service must set Start Command to: python -m admin_bot
-CMD ["python", "-m", "field_bot"]
+# start.sh installs deps then runs field_bot or admin_bot by BOT_ROLE (fallback if Railway skipped Dockerfile build)
+RUN chmod +x /app/start.sh
+CMD ["/app/start.sh"]
 

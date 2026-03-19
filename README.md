@@ -56,10 +56,10 @@ python -m admin_bot
 
 ### Railway 배포(요약)
 
-- 빌드는 **Dockerfile** 사용 (의존성 설치 보장). `nixpacks.toml` 제거 권장.
+- `railway.toml`로 **Dockerfile** 빌드 강제. 시작 시 `start.sh`가 의존성 설치 후 봇 실행(빌더가 Dockerfile을 안 써도 동작).
 - Project 1개, Service 2개 (같은 레포 연결)
-  - **field 서비스**: Start Command 비움(기본 `python -m field_bot`). Variables: `DATABASE_URL`, `FIELD_BOT_TOKEN`
-  - **admin 서비스**: Start Command에 **`python -m admin_bot`** 입력. Variables: `DATABASE_URL`, `ADMIN_BOT_TOKEN`, `ADMIN_USER_IDS`
+  - **field 서비스**: Start Command 비움. Variables: `DATABASE_URL`, `FIELD_BOT_TOKEN` (선택: `BOT_ROLE=field`)
+  - **admin 서비스**: Start Command 비움. Variables: `DATABASE_URL`, `ADMIN_BOT_TOKEN`, `ADMIN_USER_IDS`, **`BOT_ROLE=admin`**
 - Postgres 1개
   - 두 서비스에 같은 `DATABASE_URL` 연결
 
